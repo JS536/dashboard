@@ -1,0 +1,86 @@
+import { getDb } from '../db/connection';
+import { generateId } from '../lib/id';
+import { CreateCreatorInput, Creator, CreatorRow, UpdateCreatorInput } from './creator.types';
+
+function rowToCreator(row: CreatorRow): Creator {
+  return {
+    id: row.id,
+    name: row.name,
+    platform: row.platform as Creator['platform'],
+    followers: row.followers,
+    averageViews: row.average_views,
+    engagementRate: row.engagement_rate,
+    averageGrowthRate: row.average_growth_rate,
+    currency: row.currency,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export class CreatorRepository {
+  create(input: CreateCreatorInput): Creator {
+    const db = getDb();
+    const id = generateId();
+    db.prepare(
+      `INSERT INTO creators (id, name, platform, followers, average_views, engagement_rate, average_growth_rate, currency)
+       VALUES (@id, @name, @platform, @followers, @averageViews, @engagementRate, @averageGrowthRate, @currency)`
+    ).run({
+      id,
+      name: input.name,
+      platform: input.platform,
+      followers: input.followers,
+      averageViews: input.averageViews,
+      engagementRate: input.engagementRate,
+      averageGrowthRate: input.averageGrowthRate ?? 0,
+      currency: input.currency ?? 'INR',
+    });
+    return this.findByIdOrThrow(id);
+  }
+
+  findById(id: string): Creator | null {
+    const db = getDb();
+    const row = db.prepare('SELECT * FROM creators WHERE id = ?').get(id) as CreatorRow | undefined;
+    return row ? rowToCreator(row) : null;
+  }
+
+  findByIdOrThrow(id: string): Creator {
+    const creator = this.findById(id);
+    if (!creator) {
+      throw new Error(`Creator ${id} not found`);
+    }
+    return creator;
+  }
+
+  list(): Creator[] {
+    const db = getDb();
+    const rows = db.prepare('SELECT * FROM creators ORDER BY created_at DESC').all() as CreatorRow[];
+    return rows.map(rowToCreator);
+  }
+
+  update(id: string, input: UpdateCreatorInput): Creator | null {
+    const db = getDb();
+    const existing = this.findById(id);
+    if (!existing) return null;
+
+    const merged = { ...existing, ...input };
+    db.prepare(
+      `UPDATE creators SET
+        name = @name,
+        platform = @platform,
+        followers = @followers,
+        average_views = @averageViews,
+        engagement_rate = @engagementRate,
+        average_growth_rate = @averageGrowthRate,
+        currency = @currency,
+        updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
+       WHERE id = @id`
+    ).run({ ...merged, id });
+    return this.findById(id);
+  }
+
+  exists(id: string): boolean {
+    const db = getDb();
+    const row = db.prepare('SELECT 1 FROM creators WHERE id = ?').get(id);
+    return !!row;
+  }
+}
