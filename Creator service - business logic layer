@@ -1,0 +1,37 @@
+import { NotFoundError } from '../lib/errors';
+import { CreatorRepository } from './creator.repository';
+import { CreateCreatorInput, Creator, UpdateCreatorInput } from './creator.types';
+
+export class CreatorService {
+  constructor(private readonly repo: CreatorRepository = new CreatorRepository()) {}
+
+  create(input: CreateCreatorInput): Creator {
+    return this.repo.create(input);
+  }
+
+  list(): Creator[] {
+    return this.repo.list();
+  }
+
+  getById(id: string): Creator {
+    const creator = this.repo.findById(id);
+    if (!creator) {
+      throw new NotFoundError('CREATOR_NOT_FOUND', `Creator ${id} not found`);
+    }
+    return creator;
+  }
+
+  update(id: string, input: UpdateCreatorInput): Creator {
+    const updated = this.repo.update(id, input);
+    if (!updated) {
+      throw new NotFoundError('CREATOR_NOT_FOUND', `Creator ${id} not found`);
+    }
+    return updated;
+  }
+
+  assertExists(id: string): void {
+    if (!this.repo.exists(id)) {
+      throw new NotFoundError('CREATOR_NOT_FOUND', `Creator ${id} not found`);
+    }
+  }
+}
