@@ -1,0 +1,35 @@
+import { ActivityAction } from './activity-log.constants';
+
+export interface ActivityLogEntry {
+  id: string;
+  negotiationId: string;
+  creatorId: string;
+  action: ActivityAction;
+  actorId: string;
+  timestamp: string;
+  metadata: Record<string, unknown> | null;
+  previousValue: unknown;
+  newValue: unknown;
+}
+
+export interface RecordActivityInput {
+  negotiationId: string;
+  creatorId: string;
+  action: ActivityAction;
+  actorId: string;
+  metadata?: Record<string, unknown>;
+  previousValue?: unknown;
+  newValue?: unknown;
+}
+
+export interface ActivityLogRow {
+  id: string;
+  negotiation_id: string;
+  creator_id: string;
+  action: string;
+  actor_id: string;
+  timestamp: string;
+  metadata: string | null;
+  previous_value: string | null;
+  new_value: string | null;
+}
