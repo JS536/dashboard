@@ -1,0 +1,28 @@
+export enum Platform {
+  INSTAGRAM = 'INSTAGRAM',
+  YOUTUBE = 'YOUTUBE',
+  TIKTOK = 'TIKTOK',
+  TWITTER = 'TWITTER',
+  FACEBOOK = 'FACEBOOK',
+  LINKEDIN = 'LINKEDIN',
+  OTHER = 'OTHER',
+}
+
+export enum ContentType {
+  POST = 'POST',
+  REEL = 'REEL',
+  STORY = 'STORY',
+  VIDEO = 'VIDEO',
+  SHORT = 'SHORT',
+  LIVE = 'LIVE',
+  CAROUSEL = 'CAROUSEL',
+  BLOG = 'BLOG',
+  OTHER = 'OTHER',
+}
+
+export const PLATFORMS = Object.values(Platform);
+export const CONTENT_TYPES = Object.values(ContentType);
+
+/** ISO 4217-style currency codes accepted by the API. Extend as needed. */
+export const SUPPORTED_CURRENCIES = ['INR', 'USD', 'EUR', 'GBP', 'AED'] as const;
+export type SupportedCurrency = (typeof SUPPORTED_CURRENCIES)[number];
