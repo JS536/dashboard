@@ -1,0 +1,24 @@
+import { Router } from 'express';
+import { asyncHandler } from '../lib/async-handler';
+import { validate } from '../middleware/validate';
+import { CreatorController } from './creator.controller';
+import { createCreatorSchema, creatorIdParamSchema, updateCreatorSchema } from './creator.validation';
+
+const router = Router();
+const controller = new CreatorController();
+
+router.post('/', validate(createCreatorSchema, 'body'), asyncHandler(async (req, res) => controller.create(req, res)));
+router.get('/', asyncHandler(async (req, res) => controller.list(req, res)));
+router.get(
+  '/:id',
+  validate(creatorIdParamSchema, 'params'),
+  asyncHandler(async (req, res) => controller.getById(req, res))
+);
+router.patch(
+  '/:id',
+  validate(creatorIdParamSchema, 'params'),
+  validate(updateCreatorSchema, 'body'),
+  asyncHandler(async (req, res) => controller.update(req, res))
+);
+
+export const creatorRoutes = router;
