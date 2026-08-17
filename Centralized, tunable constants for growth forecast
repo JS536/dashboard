@@ -1,0 +1,28 @@
+/**
+ * FORECAST_CONFIG holds tunable coefficients for the deterministic
+ * growth forecast model (growth-forecast/growth-forecast.service.ts).
+ */
+export const FORECAST_CONFIG = {
+  /**
+   * Views typically grow slower than follower count as an account
+   * scales (diminishing reach per follower). This dampens the
+   * follower growth rate when it is reused as a proxy for view growth
+   * (i.e. when no explicit historical view growth rate is supplied).
+   */
+  VIEWS_GROWTH_DAMPENING_FACTOR: 0.7,
+
+  /**
+   * Engagement rate tends to drift slightly as an audience grows
+   * (a larger, more diverse audience is usually somewhat less
+   * engaged per-capita). This is the assumed engagement decay per
+   * period, applied multiplicatively, when growth is positive.
+   */
+  ENGAGEMENT_DECAY_PER_PERIOD: 0.995,
+
+  /** Clamp applied to any growth rate to avoid runaway/unrealistic projections. */
+  MIN_GROWTH_RATE: -0.5,
+  MAX_GROWTH_RATE: 1.0,
+
+  /** Forecast periods are capped to keep the model within a sane horizon. */
+  MAX_FORECAST_PERIODS: 24,
+} as const;
