@@ -1,0 +1,40 @@
+import { Platform } from './creator.constants';
+
+export interface Creator {
+  id: string;
+  name: string;
+  platform: Platform;
+  followers: number;
+  averageViews: number;
+  engagementRate: number; // fraction, e.g. 0.045
+  averageGrowthRate: number; // fraction per period
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCreatorInput {
+  name: string;
+  platform: Platform;
+  followers: number;
+  averageViews: number;
+  engagementRate: number;
+  averageGrowthRate?: number;
+  currency?: string;
+}
+
+export type UpdateCreatorInput = Partial<CreateCreatorInput>;
+
+/** Raw row shape as stored in SQLite (snake_case columns). */
+export interface CreatorRow {
+  id: string;
+  name: string;
+  platform: string;
+  followers: number;
+  average_views: number;
+  engagement_rate: number;
+  average_growth_rate: number;
+  currency: string;
+  created_at: string;
+  updated_at: string;
+}
