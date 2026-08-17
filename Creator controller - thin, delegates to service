@@ -1,0 +1,26 @@
+import { Request, Response } from 'express';
+import { CreatorService } from './creator.service';
+
+export class CreatorController {
+  constructor(private readonly service: CreatorService = new CreatorService()) {}
+
+  create = (req: Request, res: Response): void => {
+    const creator = this.service.create(req.body);
+    res.status(201).json({ success: true, data: creator });
+  };
+
+  list = (_req: Request, res: Response): void => {
+    const creators = this.service.list();
+    res.status(200).json({ success: true, data: creators });
+  };
+
+  getById = (req: Request, res: Response): void => {
+    const creator = this.service.getById(req.params.id);
+    res.status(200).json({ success: true, data: creator });
+  };
+
+  update = (req: Request, res: Response): void => {
+    const creator = this.service.update(req.params.id, req.body);
+    res.status(200).json({ success: true, data: creator });
+  };
+}
